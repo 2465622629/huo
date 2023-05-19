@@ -80,6 +80,25 @@ ul[data-type="taskList"] {
   }
 }
 
+// 自定义样式
+.cont{
+  //将容器分成两列
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+  //高度沾满整个屏幕
+    height: 100vh;
+}
+
+//右侧容器
+.right-cont{
+  //background-color: red;
+  //超出部分隐藏，并添加滚动条
+    overflow: auto;
+}
+
+
+//自定义样式
 
 .editor {
   background-color: #fff;
@@ -88,7 +107,7 @@ ul[data-type="taskList"] {
   color: #0d0d0d;
   display: flex;
   flex-direction: column;
-  max-height: 26rem;
+  height: 99%;
 
   &__header {
     align-items: center;

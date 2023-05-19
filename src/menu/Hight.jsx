@@ -1,13 +1,13 @@
 import './style.scss'
 
-import { TiptapCollabProvider } from '@hocuspocus/provider'
+import {TiptapCollabProvider} from '@hocuspocus/provider'
 import CharacterCount from '@tiptap/extension-character-count'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Highlight from '@tiptap/extension-highlight'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import { EditorContent, useEditor } from '@tiptap/react'
+import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {
     useCallback, useEffect,
@@ -17,6 +17,7 @@ import * as Y from 'yjs'
 
 
 import MenuBar from './MenuBar'
+import {MyList} from "../contList/MyList";
 
 const colors = ['#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8', '#94FADB', '#B9F18D']
 const names = [
@@ -80,7 +81,7 @@ export function Hight() {
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
-                history: false,
+                history: true,
             }),
             Highlight,
             TaskList,
@@ -116,23 +117,30 @@ export function Hight() {
         const name = (window.prompt('Name') || '').trim().substring(0, 32)
 
         if (name) {
-            return setCurrentUser({ ...currentUser, name })
+            return setCurrentUser({...currentUser, name})
         }
     }, [currentUser])
 
     return (
-        <div className="editor">
-            {editor && <MenuBar editor={editor} />}
-            <EditorContent className="editor__content" editor={editor} />
-            <div className="editor__footer">
-                <div className={`editor__status editor__status--${status}`}>
-                    {status === 'connected'
-                        ? `${editor.storage.collaborationCursor.users.length} user${editor.storage.collaborationCursor.users.length === 1 ? '' : 's'} online in ${room}`
-                        : 'offline'}
+        <div className="cont">
+            <div className="editor">
+                {editor && <MenuBar editor={editor}/>}
+                <EditorContent className="editor__content" editor={editor}/>
+                <div className="editor__footer">
+                    <div className={`editor__status editor__status--${status}`}>
+                        {status === 'connected'
+                            ? `${editor.storage.collaborationCursor.users.length} user${editor.storage.collaborationCursor.users.length === 1 ? '' : 's'} online in ${room}`
+                            : 'offline'}
+                    </div>
+                    <div className="editor__name">
+                        <button onClick={setName}>{currentUser.name}</button>
+                    </div>
                 </div>
-                <div className="editor__name">
-                    <button onClick={setName}>{currentUser.name}</button>
-                </div>
+            </div>
+            <div className="right-cont">
+                <MyList name="safkl"/>
+                <MyList name="safkl"/>
+                <MyList name="safkl"/>
             </div>
         </div>
     )
