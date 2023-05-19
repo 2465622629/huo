@@ -97,7 +97,20 @@ ul[data-type="taskList"] {
     overflow: auto;
 }
 
-
+.ProseMirror{
+  background-color: white;
+  color: black;
+  font-size: 1.5em;
+  height: 100%;
+  // 显示光标
+  caret-color: black;
+  &>p{
+    margin: 0;
+  }
+}
+.ProseMirror-focused{
+  outline: none;
+}
 //自定义样式
 
 .editor {
@@ -107,7 +120,7 @@ ul[data-type="taskList"] {
   color: #0d0d0d;
   display: flex;
   flex-direction: column;
-  height: 99%;
+  height: 99vh;
 
   &__header {
     align-items: center;
