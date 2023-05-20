@@ -53,7 +53,9 @@ const getInitialUser = () => {
     }
 }
 
+
 export function Hight() {
+
     const [status, setStatus] = useState('connecting')
     const [currentUser, setCurrentUser] = useState(getInitialUser)
 
@@ -77,7 +79,8 @@ export function Hight() {
         ],
         content: '12421412',
     })
-
+    //获取编辑器文本内容
+    const text = editor?.getText()
     useEffect(() => {
         // Update status changes
         websocketProvider.on('status', event => {
@@ -118,9 +121,7 @@ export function Hight() {
                 </div>
             </div>
             <div className="right-cont">
-                <MyList name="safkl"/>
-                <MyList name="safkl"/>
-                <MyList name="safkl"/>
+                <MyList name={text}/>
             </div>
         </div>
     )
