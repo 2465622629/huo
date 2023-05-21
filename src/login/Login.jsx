@@ -11,6 +11,8 @@ export function Login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                //允许cookie
+                // "Access-Control-Allow-Credentials": "true",
             },
             body: JSON.stringify({
                 kami: myKey,

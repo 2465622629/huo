@@ -1,15 +1,12 @@
 import './style.scss'
-import {TiptapCollabProvider} from '@hocuspocus/provider'
 import CharacterCount from '@tiptap/extension-character-count'
-import Collaboration from '@tiptap/extension-collaboration'
-import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Highlight from '@tiptap/extension-highlight'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useCallback, useEffect, useState} from 'react'
-import * as Y from 'yjs'
+
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
 
@@ -29,12 +26,7 @@ const getRandomName = () => getRandomElement(names)
 
 const room = getRandomRoom()
 
-const ydoc = new Y.Doc()
-const websocketProvider = new TiptapCollabProvider({
-    appId: '7j9y6m10',
-    name: room,
-    document: ydoc,
-})
+
 const getInitialUser = () => {
     return JSON.parse(localStorage.getItem('currentUser')) || {
         name: getRandomName(),
@@ -57,37 +49,11 @@ export function Hight({alertCont, cont}) {
             CharacterCount.configure({
                 limit: 10000,
             }),
-            Collaboration.configure({
-                document: ydoc,
-            }),
-            CollaborationCursor.configure({
-                provider: websocketProvider,
-            }),
         ],
     })
     //获取网页中class为ProseMirror的div
     // 定义text 为editor的内容 如果没有内容则为空
     const text = editor ? editor.getText() : ''
-    useEffect(() => {
-        websocketProvider.on('status', (event) => {
-            setStatus(event.status)
-        })
-    }, [])
-
-    useEffect(() => {
-        if (editor && currentUser) {
-            localStorage.setItem('currentUser', JSON.stringify(currentUser))
-            editor.chain().focus().updateUser(currentUser).run()
-        }
-    }, [editor, currentUser])
-
-    const setName = useCallback(() => {
-        const name = (window.prompt('Name') || '').trim().substring(0, 32)
-
-        if (name) {
-            setCurrentUser({...currentUser, name})
-        }
-    }, [currentUser])
 
 
     const fetchData = () => {
@@ -129,7 +95,7 @@ export function Hight({alertCont, cont}) {
     const setSelection = (value) => {
         if (editor) {
             const {from, to} = editor.state.selection
-            editor.commands.insertContentAt({from:from,to:to}, value)
+            editor.commands.insertContentAt({from: from, to: to}, value)
             // editor.chain()
             //     .focus()
             //     .setTextSelection(from, to)
@@ -161,16 +127,7 @@ export function Hight({alertCont, cont}) {
                 {editor && <MenuBar editor={editor}/>}
                 <EditorContent className="editor__content" editor={editor}/>
                 <div className="editor__footer">
-                    <div className={`editor__status editor__status--${status}`}>
-                        {status === 'connected'
-                            ? `${editor.storage.collaborationCursor.users.length} 位用户${editor.storage.collaborationCursor.users.length === 1 ? '' : 's'} 在线 房间号 ${room}`
-                            : 'offline'}
-
-                        <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
-                    </div>
-                    <div className="editor__name">
-                        <button onClick={setName}>{currentUser.name}</button>
-                    </div>
+                    <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
                 </div>
             </div>
             <div className="right-cont">
