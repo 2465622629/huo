@@ -5,39 +5,14 @@ import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React, {useCallback, useEffect, useState} from 'react'
+import React, { useState} from 'react'
 
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
 
 
-const colors = ['#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8', '#94FADB', '#B9F18D']
-const names = ['Lea Thompson', 'Cyndi Lauper', 'Tom Cruise', 'Madonna']
-
-const getRandomElement = (list) => list[Math.floor(Math.random() * list.length)]
-
-const getRandomRoom = () => {
-    const roomNumbers = ['初级会员', '中级会员', '高级会员']
-    return getRandomElement(roomNumbers.map((number) => `${number}`))
-}
-
-const getRandomColor = () => getRandomElement(colors)
-const getRandomName = () => getRandomElement(names)
-
-const room = getRandomRoom()
-
-
-const getInitialUser = () => {
-    return JSON.parse(localStorage.getItem('currentUser')) || {
-        name: getRandomName(),
-        color: getRandomColor(),
-    }
-}
-
-export function Hight({alertCont, cont}) {
+export function Hight() {
     const [changeData, setChangeData] = useState({})
-    const [status, setStatus] = useState('connecting')
-    const [currentUser, setCurrentUser] = useState(getInitialUser)
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
