@@ -5,6 +5,7 @@ import React, { Fragment } from 'react'
 import MenuItem from './MenuItem'
 
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default ({ editor }) => {
     const items = [
         {

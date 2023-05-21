@@ -6,12 +6,13 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Highlight from '@tiptap/extension-highlight'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import {BubbleMenu, EditorContent, useEditor} from '@tiptap/react'
+import { EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useCallback, useEffect, useState} from 'react'
 import * as Y from 'yjs'
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
+
 
 
 const colors = ['#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8', '#94FADB', '#B9F18D']
@@ -42,17 +43,10 @@ const getInitialUser = () => {
     }
 }
 
-export function Hight(props) {
-    const {cont} = props
+export function Hight({alertCont,cont}) {
     const [changeData, setChangeData] = useState({})
     const [status, setStatus] = useState('connecting')
     const [currentUser, setCurrentUser] = useState(getInitialUser)
-    const mockData = {
-        "msg1": "对文本进行再创作",
-        "msg2": "对文本进行重构",
-        "msg3": "对文本进行再创作"
-    }
-
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -71,7 +65,6 @@ export function Hight(props) {
                 provider: websocketProvider,
             }),
         ],
-        content: '1324',
     })
     //获取网页中class为ProseMirror的div
     // 定义text 为editor的内容 如果没有内容则为空
@@ -103,11 +96,12 @@ export function Hight(props) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Set-Cookie': 'PHPSESSID=1fogrcdvgi2723f5auv17dilmu',
             },
             body: JSON.stringify({
-                text: text,
-                previous_text: '上一条文本',
-                next_text: '下一条文本',
+                'text': text,
+                'previous_text': '上一条文本',
+                'next_text': '下一条文本',
             }),
         })
             .then((response) => response.json())
@@ -115,7 +109,7 @@ export function Hight(props) {
                 if (data.code === 200) {
                     console.log('Success:', data)
                     setChangeData(data)
-                }else {
+                } else {
                     console.log('Error:', data)
                 }
             })
@@ -126,8 +120,8 @@ export function Hight(props) {
     //获取选中的内容
     const getSelection = () => {
         if (editor) {
-            const { from, to } = editor.state.selection
-            return editor.getText().slice(from-1, to)
+            const {from, to} = editor.state.selection
+            return editor.getText().slice(from - 1, to)
         }
         return ''
     }
@@ -135,7 +129,7 @@ export function Hight(props) {
     //设置选中的内容
     const setSelection = (value) => {
         if (editor) {
-            const { from, to } = editor.state.selection
+            const {from, to} = editor.state.selection
             editor.chain()
                 .focus()
                 .setTextSelection(from, to)
@@ -152,6 +146,14 @@ export function Hight(props) {
             fetchData()
         }
     }
+    // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
+    const listItems = changeData.msg? Object.values(changeData.msg).map((item, index) => {
+        return <MyList cont={item} key={index}/>
+    }): <div>暂无数据</div>
+    function doSomething(value) {
+        setSelection(value)
+    }
+
     return (
         <div className="cont">
             <div className="editor">
@@ -171,11 +173,9 @@ export function Hight(props) {
                 </div>
             </div>
             <div className="right-cont">
-                {Object.values(mockData).map((item, index) => {
-                    return(
-                        <MyList cont={item} key={index}/>
-                    )
-                })}
+                {listItems}
+                <MyList cont={"你好a"} onClick={(value) => doSomething(value)} />
+                <h1>{cont}</h1>
             </div>
         </div>
     )
