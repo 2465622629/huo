@@ -132,6 +132,21 @@ ul[data-type="taskList"] {
   &:hover{
     background-color: #616161;
   }}
+//引导样式
+.guide1{
+  position: absolute;
+  left: 0.5vw;
+  top: 6vh;
+  width: 49vw;
+  height: 80vh;
+}
+.guide2{
+  position: absolute;
+  left: 50.5vw;
+  top: 6vh;
+  width: 49vw;
+  height: 80vh;
+}
 //自定义样式
 
 .editor {

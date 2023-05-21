@@ -5,13 +5,36 @@ import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React, { useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
+import { Tour, TourProps} from "antd";
 
 
 export function Hight() {
+    const ref1 = useRef(null);
+    const ref2 = useRef(null);
+    const ref3 = useRef(null);
+    const [open, setOpen] = useState(false);
+
+    const steps: TourProps['steps'] = [
+        {
+            title: '编辑您的论文',
+            description: '这里是编辑区，您可以尽情发挥您的创意',
+            target: () => ref1.current,
+        },
+        {
+            title: '这里对您选中的文本进行改写',
+            description: '点击改写按钮，我们将使用最强大的AI技术为您提供修改建议',
+            target: () => ref2.current,
+        },
+        {
+            title: '单击应用按钮',
+            description: '您只需要轻轻单击应用按钮，一篇完美的文章就诞生了',
+            target: () => ref3.current,
+        },
+    ];
     const [changeData, setChangeData] = useState({})
     const editor = useEditor({
         extensions: [
@@ -26,9 +49,12 @@ export function Hight() {
             }),
         ],
     })
-    //获取网页中class为ProseMirror的div
     // 定义text 为editor的内容 如果没有内容则为空
     const text = editor ? editor.getText() : ''
+    //页面加载调用
+    useEffect(() => {
+        setOpen(true)
+    }, [])
 
 
     const fetchData = () => {
@@ -99,13 +125,17 @@ export function Hight() {
     return (
         <div className="cont">
             <div className="editor">
+                <div className="guide1" ref={ref2}></div>
                 {editor && <MenuBar editor={editor}/>}
                 <EditorContent className="editor__content" editor={editor}/>
                 <div className="editor__footer">
-                    <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
+                    <button className="change_text_btn" onClick={changeText} ref={ref1}>改写选中文本</button>
+
+                    <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
                 </div>
             </div>
             <div className="right-cont">
+                <div className="guide2" ref={ref3}></div>
                 {listItems}
                 {/*<MyList cont={"你好a"} onClick={(value) => doSomething(value)}/>*/}
             </div>
