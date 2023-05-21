@@ -84,7 +84,7 @@ ul[data-type="taskList"] {
 .cont{
   //将容器分成两列，每列占一半，中间间隔20px，并固定两侧宽度
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: max(50vw) 1fr;
     grid-gap: 20px;
     grid-template-areas: "left right";
     grid-template-rows: 100%;

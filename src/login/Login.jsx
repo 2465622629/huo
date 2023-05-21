@@ -28,10 +28,10 @@ export function Login() {
         })
     }
 
+    // 弹窗
     //处理登录
     function handleLogin() {
         if (myKey === '') {
-            alert('请输入卡密')
             return
         }
         login()
@@ -48,7 +48,7 @@ export function Login() {
                         <Input value={myKey} onChange={(e) => {
                             setMykey(e.target.value)
                         }} placeholder="请输入卡密" allowClear/>
-                        <Button size="large" onClick={handleLogin}>登录</Button>
+                        <Button type="primary" size="large" onClick={handleLogin}>登录</Button>
                     </div>
                 </div>
             </div>
