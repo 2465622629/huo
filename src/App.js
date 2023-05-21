@@ -1,6 +1,7 @@
 import './App.css';
 import {Hight} from "./menu/Hight";
-import { BrowserRouter as Router, Switch, Route } from 'react-router'; // 引入路由
+import { BrowserRouter as Router, Switch, Route } from 'react-router';
+import {Login} from "./login/Login"; // 引入路由
 
 
 
@@ -14,7 +15,7 @@ const App = () => {
         //     </div>
         // </Router>
         <div className="App">
-            <Hight/>
+            <Login/>
         </div>
     );
 };
