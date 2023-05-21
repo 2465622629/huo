@@ -7,7 +7,6 @@ export function Login() {
     const [myKey, setMykey] = React.useState('') //卡密
     //发起登录请求
     function login() {
-        console.log("当前卡密", myKey)
         fetch('http://45.11.46.84/login.php', {
             method: 'POST',
             headers: {

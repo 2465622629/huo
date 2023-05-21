@@ -6,13 +6,12 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Highlight from '@tiptap/extension-highlight'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import { EditorContent, useEditor} from '@tiptap/react'
+import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useCallback, useEffect, useState} from 'react'
 import * as Y from 'yjs'
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
-
 
 
 const colors = ['#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8', '#94FADB', '#B9F18D']
@@ -43,7 +42,7 @@ const getInitialUser = () => {
     }
 }
 
-export function Hight({alertCont,cont}) {
+export function Hight({alertCont, cont}) {
     const [changeData, setChangeData] = useState({})
     const [status, setStatus] = useState('connecting')
     const [currentUser, setCurrentUser] = useState(getInitialUser)
@@ -130,11 +129,12 @@ export function Hight({alertCont,cont}) {
     const setSelection = (value) => {
         if (editor) {
             const {from, to} = editor.state.selection
-            editor.chain()
-                .focus()
-                .setTextSelection(from, to)
-                .insertContent(value)
-                .run()
+            editor.commands.insertContentAt({from:from,to:to}, value)
+            // editor.chain()
+            //     .focus()
+            //     .setTextSelection(from, to)
+            //     .insertContent(value)
+            //     .run()
         }
     }
 
@@ -147,9 +147,10 @@ export function Hight({alertCont,cont}) {
         }
     }
     // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
-    const listItems = changeData.msg? Object.values(changeData.msg).map((item, index) => {
-        return <MyList cont={item} key={index}/>
-    }): <div>暂无数据</div>
+    const listItems = changeData.msg ? Object.values(changeData.msg).map((item, index) => {
+        return <MyList cont={item} onClick={(value) => doSomething(value)}/>
+    }) : <div>暂无数据</div>
+
     function doSomething(value) {
         setSelection(value)
     }
@@ -174,8 +175,7 @@ export function Hight({alertCont,cont}) {
             </div>
             <div className="right-cont">
                 {listItems}
-                <MyList cont={"你好a"} onClick={(value) => doSomething(value)} />
-                <h1>{cont}</h1>
+                {/*<MyList cont={"你好a"} onClick={(value) => doSomething(value)}/>*/}
             </div>
         </div>
     )
