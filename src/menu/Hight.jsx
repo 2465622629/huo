@@ -6,12 +6,13 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import Highlight from '@tiptap/extension-highlight'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import {EditorContent, useEditor} from '@tiptap/react'
+import {BubbleMenu, EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useCallback, useEffect, useState} from 'react'
 import * as Y from 'yjs'
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
+
 
 const colors = ['#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8', '#94FADB', '#B9F18D']
 const names = ['Lea Thompson', 'Cyndi Lauper', 'Tom Cruise', 'Madonna']
@@ -19,8 +20,8 @@ const names = ['Lea Thompson', 'Cyndi Lauper', 'Tom Cruise', 'Madonna']
 const getRandomElement = (list) => list[Math.floor(Math.random() * list.length)]
 
 const getRandomRoom = () => {
-    const roomNumbers = [10, 11, 12]
-    return getRandomElement(roomNumbers.map((number) => `rooms.${number}`))
+    const roomNumbers = ['初级会员', '中级会员', '高级会员']
+    return getRandomElement(roomNumbers.map((number) => `${number}`))
 }
 
 const getRandomColor = () => getRandomElement(colors)
@@ -34,7 +35,6 @@ const websocketProvider = new TiptapCollabProvider({
     name: room,
     document: ydoc,
 })
-
 const getInitialUser = () => {
     return JSON.parse(localStorage.getItem('currentUser')) || {
         name: getRandomName(),
@@ -47,6 +47,11 @@ export function Hight(props) {
     const [changeData, setChangeData] = useState({})
     const [status, setStatus] = useState('connecting')
     const [currentUser, setCurrentUser] = useState(getInitialUser)
+    const mockData = {
+        "msg1": "对文本进行再创作",
+        "msg2": "对文本进行重构",
+        "msg3": "对文本进行再创作"
+    }
 
     const editor = useEditor({
         extensions: [
@@ -68,10 +73,9 @@ export function Hight(props) {
         ],
         content: '1324',
     })
-
+    //获取网页中class为ProseMirror的div
     // 定义text 为editor的内容 如果没有内容则为空
     const text = editor ? editor.getText() : ''
-
     useEffect(() => {
         websocketProvider.on('status', (event) => {
             setStatus(event.status)
@@ -93,20 +97,12 @@ export function Hight(props) {
         }
     }, [currentUser])
 
-    useEffect(() => {
-        fetchData()
-        // console.log(Object.values(changeData.msg))
-    }, [changeData])
 
     const fetchData = () => {
         fetch('http://45.11.46.84/api.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                //允许跨域
-                'Access-Control-Allow-Origin': '*',
-                //允许跨域携带cookie
-                'Access-Control-Allow-Credentials': true,
             },
             body: JSON.stringify({
                 text: text,
@@ -116,13 +112,46 @@ export function Hight(props) {
         })
             .then((response) => response.json())
             .then((data) => {
-                setChangeData(data)
+                if (data.code === 200) {
+                    console.log('Success:', data)
+                    setChangeData(data)
+                }else {
+                    console.log('Error:', data)
+                }
             })
             .catch((error) => {
                 console.error('Error:', error)
             })
     }
+    //获取选中的内容
+    const getSelection = () => {
+        if (editor) {
+            const { from, to } = editor.state.selection
+            return editor.getText().slice(from-1, to)
+        }
+        return ''
+    }
 
+    //设置选中的内容
+    const setSelection = (value) => {
+        if (editor) {
+            const { from, to } = editor.state.selection
+            editor.chain()
+                .focus()
+                .setTextSelection(from, to)
+                .insertContent(value)
+                .run()
+        }
+    }
+
+    // 改写文本
+    const changeText = () => {
+        const selection = getSelection()
+        console.log(selection)
+        if (selection) {
+            fetchData()
+        }
+    }
     return (
         <div className="cont">
             <div className="editor">
@@ -131,8 +160,10 @@ export function Hight(props) {
                 <div className="editor__footer">
                     <div className={`editor__status editor__status--${status}`}>
                         {status === 'connected'
-                            ? `${editor.storage.collaborationCursor.users.length} user${editor.storage.collaborationCursor.users.length === 1 ? '' : 's'} online in ${room}`
+                            ? `${editor.storage.collaborationCursor.users.length} 位用户${editor.storage.collaborationCursor.users.length === 1 ? '' : 's'} 在线 房间号 ${room}`
                             : 'offline'}
+
+                        <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
                     </div>
                     <div className="editor__name">
                         <button onClick={setName}>{currentUser.name}</button>
@@ -140,14 +171,11 @@ export function Hight(props) {
                 </div>
             </div>
             <div className="right-cont">
-                <MyList cont={text}/>
-                {/*<input value={cont} onChange={(e)=>{*/}
-                {/*    editor.chain().focus().setText(e.target.value).run()*/}
-                {/*}}/>*/}
-                {/*{changeData.map((item, index) => {*/}
-                {/*    return <MyList key={index} cont={item}/>*/}
-                {/*})}*/}
-
+                {Object.values(mockData).map((item, index) => {
+                    return(
+                        <MyList cont={item} key={index}/>
+                    )
+                })}
             </div>
         </div>
     )

@@ -82,10 +82,15 @@ ul[data-type="taskList"] {
 
 // 自定义样式
 .cont{
-  //将容器分成两列
+  //将容器分成两列，每列占一半，中间间隔20px，并固定两侧宽度
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 20px;
+    grid-template-areas: "left right";
+    grid-template-rows: 100%;
+    width: 100%;
+  //使文本，自动换行
+    word-wrap: break-word;
   //高度沾满整个屏幕
     height: 100vh;
 }
@@ -102,6 +107,7 @@ ul[data-type="taskList"] {
   color: black;
   font-size: 1.5em;
   height: 100%;
+  word-wrap: break-word;
   // 显示光标
   caret-color: black;
   &>p{
@@ -111,6 +117,19 @@ ul[data-type="taskList"] {
 .ProseMirror-focused{
   outline: none;
 }
+
+.change_text_btn{
+  background-color: #0d0d0d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  margin-left: 10vw;
+  font-weight: bolder;
+  &:hover{
+    background-color: #616161;
+  }}
 //自定义样式
 
 .editor {
