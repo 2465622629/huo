@@ -9,7 +9,8 @@ import React, {useEffect, useRef, useState} from 'react'
 import {api_address} from "../config/config";
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
-import { Tour, TourProps} from "antd";
+import {Tour, TourProps, Skeleton, notification} from "antd";
+import type {NotificationPlacement} from "antd/es/notification/interface";
 
 
 export function Hight() {
@@ -17,6 +18,7 @@ export function Hight() {
     const ref2 = useRef(null);
     const ref3 = useRef(null);
     const [open, setOpen] = useState(false);
+    const [api, contextHolder] = notification.useNotification(); //弹窗
 
     const steps: TourProps['steps'] = [
         {
@@ -51,14 +53,28 @@ export function Hight() {
     })
     // 定义text 为editor的内容 如果没有内容则为空
     const text = editor ? editor.getText() : ''
+    //弹窗
+    const openNotification = (placement: NotificationPlacement,title,msg) => {
+        api.info({
+            message: title,
+            description:msg,
+            placement,
+        });
+    };
+
     //页面加载调用
     useEffect(() => {
         setOpen(true)
         let isLogin = localStorage.getItem('token')
-       if (!isLogin){
-           alert('请先登录')
-           window.location.href = '/'
-       }
+        if (!isLogin){
+            alert("请先登录")
+            window.location.href = '/'
+            //删除所有 dom
+            document.body.innerHTML = ''
+            setOpen(false)
+        }
+
+
     }, [])
 
     const fetchData = () => {
@@ -77,10 +93,17 @@ export function Hight() {
             .then((response) => response.json())
             .then((data) => {
                 if (data.status === 200) {
-                    console.log('Success:', data)
                     setChangeData(data)
-                } else {
-                    console.log('Error:', data)
+                } else if (data.status === 402) {
+                    //等待1秒
+                    setTimeout(() => {
+                        //账号失效
+                        openNotification('top','出错了',data.msg)
+                        //清除token
+                        localStorage.removeItem('token')
+                        // 跳转到登录页面
+                        window.location.href = '/'
+                    }, 1500)
                 }
             })
             .catch((error) => {
@@ -101,18 +124,12 @@ export function Hight() {
         if (editor) {
             const {from, to} = editor.state.selection
             editor.commands.insertContentAt({from: from, to: to}, value)
-            // editor.chain()
-            //     .focus()
-            //     .setTextSelection(from, to)
-            //     .insertContent(value)
-            //     .run()
         }
     }
 
     // 改写文本
     const changeText = () => {
         const selection = getSelection()
-        console.log(selection)
         if (selection) {
             fetchData()
         }
@@ -120,7 +137,7 @@ export function Hight() {
     // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
     const listItems = changeData.msg ? Object.values(changeData.msg).map((item, index) => {
         return <MyList cont={item} key={index} onClick={(value) => doSomething(value)}/>
-    }) : <div>暂无数据</div>
+    }) : <Skeleton active />
 
     function doSomething(value) {
         setSelection(value)
@@ -128,6 +145,7 @@ export function Hight() {
 
     return (
         <div className="cont">
+            {contextHolder}
             <div className="editor">
                 <div className="guide1" ref={ref2}></div>
                 {editor && <MenuBar editor={editor}/>}
@@ -141,7 +159,7 @@ export function Hight() {
             <div className="right-cont">
                 <div className="guide2" ref={ref3}></div>
                 {listItems}
-                {/*<MyList cont={"你好a"} onClick={(value) => doSomething(value)}/>*/}
+                {/*<MyList cont={"你好"} onClick={(value) => doSomething(value)}/>*/}
             </div>
         </div>
     )
