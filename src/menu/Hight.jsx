@@ -6,7 +6,7 @@ import TaskList from '@tiptap/extension-task-list'
 import {EditorContent, useEditor} from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, {useEffect, useRef, useState} from 'react'
-
+import {api_address} from "../config/config";
 import MenuBar from './MenuBar'
 import {MyList} from '../contList/MyList'
 import { Tour, TourProps} from "antd";
@@ -58,11 +58,10 @@ export function Hight() {
 
 
     const fetchData = () => {
-        fetch('http://45.11.46.84/api.php', {
+        fetch(`${api_address}/api.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Set-Cookie': 'PHPSESSID=1fogrcdvgi2723f5auv17dilmu',
             },
             body: JSON.stringify({
                 'text': text,
