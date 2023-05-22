@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.1.0",
     "@hocuspocus/provider": "^2.0.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -22,6 +23,7 @@
     "@tiptap/starter-kit": "^2.0.3",
     "add": "^2.0.6",
     "antd": "^5.5.0",
+    "clipboard-copy": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.11.2",
