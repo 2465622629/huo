@@ -134,7 +134,7 @@ export function Hight() {
                 <EditorContent className="editor__content" editor={editor}/>
                 <div className="editor__footer">
                     <button className="change_text_btn" onClick={changeText} ref={ref1}>改写选中文本</button>
-
+                    <button className="change_text_btn" onClick={changeText}>改写全部文本</button>
                     <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
                 </div>
             </div>

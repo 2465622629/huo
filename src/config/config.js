@@ -1,4 +1,4 @@
-const api_address = 'http://gaixie8.com/api';
+const api_address = 'http://api.gaixie8.com';
 const proxy_address = 'http://localhost:3003/api'
 
 
