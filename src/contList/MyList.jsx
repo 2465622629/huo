@@ -8,10 +8,10 @@ export function MyList(props){
     const [content, setContent] = useState(cont);
     const [messageApi, contextHolder] = message.useMessage();
 
-    const success = () => {
+    const success = (msg) => {
         messageApi.open({
             type: 'success',
-            content: '复制成功',
+            content: msg,
         });
     };
 
@@ -20,8 +20,13 @@ export function MyList(props){
     }, [cont]);
     const handleCopy = () => {
         clipboardCopy(content);
-        success();
+        success('复制成功');
     };
+    //应用
+    function handleApply(){
+        props.onClick(content);
+        success('应用成功');
+    }
     return (
         <div className="cont-main">
             {contextHolder}
@@ -29,7 +34,7 @@ export function MyList(props){
                 <span>{cont}</span>
             </div>
             <div className="btns">
-                <button className="apply" onClick={() => props.onClick(content)}>
+                <button className="apply" onClick={handleApply}>
                     <CheckOutlined />
                     应用
                 </button>

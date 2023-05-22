@@ -30,11 +30,13 @@ export function Hight() {
             title: '这里对您选中的文本进行改写',
             description: '点击改写按钮，我们将使用最强大的AI技术为您提供修改建议',
             target: () => ref2.current,
+            placement: 'rightTop',
         },
         {
             title: '单击应用按钮',
             description: '您只需要轻轻单击应用按钮，一篇完美的文章就诞生了',
             target: () => ref3.current,
+            placement: 'leftTop',
         },
     ];
     const [changeData, setChangeData] = useState({})
@@ -73,8 +75,6 @@ export function Hight() {
             document.body.innerHTML = ''
             setOpen(false)
         }
-
-
     }, [])
 
     const fetchData = () => {
