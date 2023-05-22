@@ -1,5 +1,5 @@
-const api_address = 'http://45.11.46.84/api';
-const proxy_address = 'http://localhost/api'
+const api_address = 'http://xiezuo8.com/api';
+const proxy_address = 'http://localhost:3000/api'
 
 
 //导出api地址
