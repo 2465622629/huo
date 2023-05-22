@@ -136,10 +136,11 @@ export function Hight() {
     }
     // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
     const listItems = changeData.msg ? Object.values(changeData.msg).map((item, index) => {
-        return <MyList cont={item} key={index} onClick={(value) => doSomething(value)}/>
+        return <MyList cont={item} key={index} onClick={(item) => doSomething(item)}/>
     }) : <Skeleton active />
 
     function doSomething(value) {
+        console.log(value)
         setSelection(value)
     }
 

@@ -1,11 +1,15 @@
 import './myList.scss'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export function MyList(props){
     const { cont } = props;
     const [isActive, setIsActive] = useState(false);
-    const [content, setContent] = useState(cont)
-    //点击时改变div的className
+    const [content, setContent] = useState(cont);
+
+    useEffect(() => {
+        setContent(cont);
+    }, [cont]);
+
     const handleClick = () => {
         setIsActive(!isActive);
     };
