@@ -54,8 +54,12 @@ export function Hight() {
     //页面加载调用
     useEffect(() => {
         setOpen(true)
+        let isLogin = localStorage.getItem('token')
+       if (!isLogin){
+           alert('请先登录')
+           window.location.href = '/'
+       }
     }, [])
-
 
     const fetchData = () => {
         fetch(`${api_address}/api.php`, {
@@ -67,11 +71,12 @@ export function Hight() {
                 'text': text,
                 'previous_text': '上一条文本',
                 'next_text': '下一条文本',
+                'token':localStorage.getItem('token')
             }),
         })
             .then((response) => response.json())
             .then((data) => {
-                if (data.code === 200) {
+                if (data.status === 200) {
                     console.log('Success:', data)
                     setChangeData(data)
                 } else {
@@ -114,7 +119,7 @@ export function Hight() {
     }
     // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
     const listItems = changeData.msg ? Object.values(changeData.msg).map((item, index) => {
-        return <MyList cont={item} onClick={(value) => doSomething(value)}/>
+        return <MyList cont={item} key={index} onClick={(value) => doSomething(value)}/>
     }) : <div>暂无数据</div>
 
     function doSomething(value) {

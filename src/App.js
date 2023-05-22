@@ -11,8 +11,8 @@ const App = () => {
         <Router>
             <div className="App">
                 <Routes>
-                    <Route exact path="/login" element={<Login/>}/>
-                    <Route exact path="/" element={<Hight/>}/>
+                    <Route exact path="/" element={<Login/>}/>
+                    <Route exact path="/index" element={<Hight/>}/>
                 </Routes>
             </div>
         </Router>

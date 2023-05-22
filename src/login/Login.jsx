@@ -1,7 +1,7 @@
 import './style.scss'
 import {Button, Input,message } from 'antd';
 import React from 'react';
-import {api_address} from "../config/config";
+import {api_address, proxy_address} from "../config/config";
 
 export function Login() {
     const [myKey, setMykey] = React.useState('') //卡密
@@ -12,21 +12,22 @@ export function Login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                //允许携带cookie
-                'Access-Control-Allow-Credentials': 'true',
+                // 'Access-Control-Allow-Origin': '*',
             },
             body: JSON.stringify({
                 kami: myKey,
             })
         }).then(res => res.json()).then(res => {
             console.log(`登录结果`, res)
-            console.log(res.headers)
             if (res.status === 200) {
                 alert('登录成功')
-                //获取本地cookie
-                let cookie = res.headers
-                console.log(`请求头${cookie}`)
-                // window.location.href = `http://${window.location.host}/?cookie=${res.cookie}`
+                console.log(res.token)
+                //设置本地cookie
+                document.cookie = `token=${res.token}`
+                // 将cookie 存到lockalStorage
+                localStorage.setItem('token', res.token)
+                //跳转到首页
+                window.location.href = `/index`
             } else {
                 alert('登录失败，请检查卡密是否正确')
             }
