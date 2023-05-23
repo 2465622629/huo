@@ -25,6 +25,7 @@ export function Hight() {
             title: '编辑您的论文',
             description: '这里是编辑区，您可以尽情发挥您的创意',
             target: () => ref1.current,
+            placement: 'rightBottom',
         },
         {
             title: '这里对您选中的文本进行改写',
@@ -144,24 +145,38 @@ export function Hight() {
         setSelection(value)
     }
 
+    // 改写全部文本
+    const changeAllText = () => {
+        // 获取全部文本
+        const allText = editor ? editor.getJSON() : ''
+        // 遍历文本
+        allText.content.forEach((item) => {
+            if (item.type === 'paragraph') {
+                item.content.forEach((item2) => {
+                    if (item2.type === 'text') {
+                        console.log(`当前文本${item2.text}`)
+                    }
+                })
+            }
+        })
+    }
+
 
     return (
         <div className="cont">
             {contextHolder}
-            <div className="editor">
-                <div className="guide1" ref={ref2}></div>
+            <div className="editor" ref={ref1}>
+                {/*<div className="guide1" ref={ref2}></div>*/}
                 {editor && <MenuBar editor={editor}/>}
                 <EditorContent className="editor__content" editor={editor}/>
-                <div className="editor__footer">
-                    <button className="change_text_btn" onClick={changeText} ref={ref1}>改写选中文本</button>
-                    <button className="change_text_btn" onClick={changeText}>改写全部文本</button>
+                <div className="editor__footer" ref={ref2}>
+                    <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
+                    <button className="change_text_btn" onClick={changeAllText}>改写全部文本</button>
                     <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
                 </div>
             </div>
-            <div className="right-cont">
-                <div className="guide2" ref={ref3}></div>
+            <div className="right-cont" ref={ref3}>
                 {listItems}
-                {/*<MyList cont={"你好"} onClick={(value) => doSomething(value)}/>*/}
             </div>
         </div>
     )
