@@ -18,6 +18,7 @@ export function Hight() {
     const ref2 = useRef(null);
     const ref3 = useRef(null);
     const [open, setOpen] = useState(false);
+    const [changeData, setChangeData] = useState({})
     const [api, contextHolder] = notification.useNotification(); //弹窗
 
     const steps: TourProps['steps'] = [
@@ -40,7 +41,7 @@ export function Hight() {
             placement: 'leftTop',
         },
     ];
-    const [changeData, setChangeData] = useState({})
+
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -57,38 +58,30 @@ export function Hight() {
     // 定义text 为editor的内容 如果没有内容则为空
     const text = editor ? editor.getText() : ''
     //弹窗
-    const openNotification = (placement: NotificationPlacement,title,msg) => {
+    const openNotification = (placement: NotificationPlacement, title, msg) => {
         api.info({
             message: title,
-            description:msg,
+            description: msg,
             placement,
         });
     };
 
     //页面加载调用
     useEffect(() => {
-        setOpen(true)
-        let isLogin = localStorage.getItem('token')
-        if (!isLogin){
-            alert("请先登录")
-            window.location.href = '/'
-            //删除所有 dom
-            document.body.innerHTML = ''
-            setOpen(false)
-        }
+        init()
     }, [])
 
-    const fetchData = () => {
+    const fetchData = (data) => {
         fetch(`${api_address}/api.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'text': text,
+                'text': data,
                 'previous_text': '上一条文本',
                 'next_text': '下一条文本',
-                'token':localStorage.getItem('token')
+                'token': localStorage.getItem('token')
             }),
         })
             .then((response) => response.json())
@@ -99,7 +92,7 @@ export function Hight() {
                     //等待1秒
                     setTimeout(() => {
                         //账号失效
-                        openNotification('top','出错了',data.msg)
+                        openNotification('top', '出错了', data.msg)
                         //清除token
                         localStorage.removeItem('token')
                         // 跳转到登录页面
@@ -128,18 +121,54 @@ export function Hight() {
         }
     }
 
+    //加载本地文本
+    function loadLocalText() {
+        let localText = localStorage.getItem('text')
+        // 获取当前文本内容
+        let cont = editor.getText()
+        if (cont.length=== 0) {
+            editor.commands.setContent(localText)
+        }
+    }
+    const handleUpdate = () => {
+        const newContent = editor.getText()
+        localStorage.setItem('text', newContent);
+    };
+
     // 改写文本
     const changeText = () => {
         const selection = getSelection()
         if (selection) {
             setChangeData({})
-            fetchData()
+            fetchData(text)
         }
     }
     // 创建一个组件列表，判断mockData是否为空，如果不为空则渲染MyList组件，否则渲染div
     const listItems = changeData.msg ? Object.values(changeData.msg).map((item, index) => {
         return <MyList cont={item} key={index} onClick={(item) => doSomething(item)}/>
     }) : <Skeleton active/>
+
+    //初始化页面调用
+    function init() {
+        //判断用户是否第一次登录
+        let isFirst = localStorage.getItem('isFirstLogin')
+        if (isFirst === 'true') {
+            setOpen(true)
+            // 设置本地存储标记为已登录
+            localStorage.setItem('isFirstLogin', false);
+        }
+        let isLogin = localStorage.getItem('token')
+        if (!isLogin) {
+            alert("请先登录")
+            window.location.href = '/'
+            //删除所有 dom
+            document.body.innerHTML = ''
+            setOpen(false)
+        }
+    }
+    window.addEventListener('beforeunload', function(event) {
+        localStorage.setItem('text', text);
+    });
 
     function doSomething(value) {
         setSelection(value)
@@ -148,17 +177,21 @@ export function Hight() {
     // 改写全部文本
     const changeAllText = () => {
         // 获取全部文本
-        const allText = editor ? editor.getJSON() : ''
+        const allText = editor ? editor.getText() : ''
+        setChangeData({})
+        fetchData(allText)
+
+
         // 遍历文本
-        allText.content.forEach((item) => {
-            if (item.type === 'paragraph') {
-                item.content.forEach((item2) => {
-                    if (item2.type === 'text') {
-                        console.log(`当前文本${item2.text}`)
-                    }
-                })
-            }
-        })
+        // allText.content.forEach((item) => {
+        //     if (item.type === 'paragraph') {
+        //         item.content.forEach((item2) => {
+        //             if (item2.type === 'text') {
+        //                 console.log(`当前文本${item2.text}`)
+        //             }
+        //         })
+        //     }
+        // })
     }
 
 
@@ -168,11 +201,11 @@ export function Hight() {
             <div className="editor" ref={ref1}>
                 {/*<div className="guide1" ref={ref2}></div>*/}
                 {editor && <MenuBar editor={editor}/>}
-                <EditorContent className="editor__content" editor={editor}/>
+                <EditorContent onBlur={handleUpdate} onClick={loadLocalText} className="editor__content" editor={editor}/>
                 <div className="editor__footer" ref={ref2}>
                     <button className="change_text_btn" onClick={changeText}>改写选中文本</button>
                     <button className="change_text_btn" onClick={changeAllText}>改写全部文本</button>
-                    <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
+                    <Tour open={open} onClose={() => setOpen(false)} steps={steps}/>
                 </div>
             </div>
             <div className="right-cont" ref={ref3}>
