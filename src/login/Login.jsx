@@ -22,7 +22,6 @@ export function Login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-
             },
             body: JSON.stringify({
                 kami: myKey,
@@ -35,6 +34,7 @@ export function Login() {
                     document.cookie = `token=${res.token}`
                     // 将cookie 存到lockalStorage
                     localStorage.setItem('token', res.token)
+                    localStorage.setItem('isFirstLogin',true);
                     //跳转到首页
                     window.location.href = `/index`
                 }, 1000)
